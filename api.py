@@ -1,23 +1,22 @@
 from flask import Flask, request, jsonify
-from yolomain import select_image
+import utils
 
 app = Flask(__name__)
 
 
-# Endpoint do przetwarzania danych z żądania GET
 @app.route("/select_image", methods=["POST"])
 def process_data():
     try:
         data = request.get_json()
-        input_image_name = data.get("InputImageName")
+        input_image_id = data.get("WildAnimalId")
 
-        if input_image_name is None:
+        if input_image_id is None:
             return (
-                jsonify({"error": f"Invaild input data - {input_image_name}"}),
+                jsonify({"error": f"Invaild input data - {input_image_id}"}),
                 400,
             )
 
-        result = select_image(input_image_name)
+        result = utils.process_images(input_image_id)
 
         return jsonify(result)
     except Exception as e:

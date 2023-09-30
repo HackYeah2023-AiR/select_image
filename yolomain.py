@@ -6,6 +6,7 @@ from keras.models import load_model
 from PIL import Image, ImageDraw
 import os
 from yolofn import yolo_out, draw
+from io import BytesIO
 
 
 FOLDER_NAME = "Tiny-Yolo-3/example"
@@ -14,7 +15,7 @@ SIZE = (416, 416)
 
 def get_box(input_image_name):
     yolo = load_model("yolotest.h5py")
-    image_src = Image.open(f"images/{input_image_name}")
+    image_src = Image.open(BytesIO(input_image_name))
     image_thumb = image_src.resize(SIZE, Image.BICUBIC)
 
     image = np.array(image_thumb, dtype="float32")
