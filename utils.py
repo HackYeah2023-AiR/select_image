@@ -6,12 +6,11 @@ DATABASE_URL = "postgresql://postgres:admin1@localhost:5433/petfinder"
 
 
 def process_images(animal_id):
-    searched_image = get_images_by_animal_ids(animal_id)
+    searched_image, image_id = get_images_by_animal_ids(animal_id)
 
     returned_json = {"searched_id": animal_id}
-    found_images, image_id = get_images_by_animal_ids(id)
     returned_json["image_id"] = image_id
-    returned_json["image"] = select_image(found_images)
+    returned_json["image"] = select_image(searched_image)
     return returned_json
 
 

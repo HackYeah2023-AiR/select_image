@@ -3,10 +3,10 @@
 import numpy as np
 import time
 from keras.models import load_model
-from PIL import Image, ImageDraw
-import os
+from PIL import Image
 from yolofn import yolo_out, draw
 from io import BytesIO
+import base64
 
 
 FOLDER_NAME = "Tiny-Yolo-3/example"
@@ -38,15 +38,13 @@ def get_box(input_image_name):
     if boxes is not None:
         draw(image_thumb, boxes, scores, classes, all_classes)
         box = boxes[0]
-    image_thumb.save(f"out/{input_image_name}", "JPEG")
-    return box
+    return box, image_thumb
 
 
-def select_image(box, input_image_name):
-    box = get_box(input_image_name)
-    file_name, _ = os.path.splitext(input_image_name)
-    output_image_path = f"out/{file_name}_frame.jpg"
-    image = Image.open(f"out/{input_image_name}")
+def select_image(input_image_name):
+    box, image = get_box(input_image_name)
+    # file_name, _ = os.path.splitext(input_image_name)
+    output_image_path = f"frame.jpg"
 
     x, y, w, h = box
     offset = 2
@@ -57,6 +55,15 @@ def select_image(box, input_image_name):
 
     cropped_image = image.crop((left, top, right, bottom))
     cropped_image.save(output_image_path, "JPEG")
+
+    image_byte_array = BytesIO()
+    cropped_image.save(
+        image_byte_array, format="JPEG"
+    )  # You can change the format to match your image format
+
+    # Encode the byte array as a Base64 string
+    base64_image = base64.b64encode(image_byte_array.getvalue()).decode()
+    return base64_image
 
 
 # if __name__ == "__main__":
